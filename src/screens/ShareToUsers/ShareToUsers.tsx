@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { Alert, FlatList, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { useGet } from '../../customhooks/useGet';
 import Loader from '../../components/Loader/Loader';
@@ -12,29 +12,39 @@ import { showTransactionResult } from '../../components/ShowToastMessage/ShowToa
 import Toast from 'react-native-toast-message';
 
 
-const ShareToUsers = () => {
+const ShareToUsers = ({navigation}:any) => {
   const route = useRoute<any>();
   const { result, error, loading, } = useGet({path:'/users',start:true}); 
-  const {data, postData, error:err, loading:ldn } = usePost('/note'); 
+  const {data, postData, error:err, loading:ldn } = usePost('/note/share-note'); 
   const { note } = route.params;
     
-console.log("DID U SEE",note)
-
+const handleShare  = async(item:any) => {
+    Alert.alert('Share Note', `Are you sure you want to share this note to ${item.email}?`, [
+      { text: 'Cancel', style: 'cancel' },
+      { text:ldn?"Sharing..." :'Share',
+         onPress: async () => {
+            try {
+                await postData({email:item.email,noteId:note.id})
+                if (err) {
+                    Alert.alert('Error', error.message || 'Failed to add note');
+                  } else {
+                    Alert.alert('Success', `Note shared to ${item.email} successfully`, [
+                      { text: 'OK', onPress: () => navigation.goBack() }
+                    ]);
+                  }
+            } catch (error) {
+                Alert.alert('Error', err.message || 'Failed to share note');
+            }
+       
+    }
+     },
+    ]);
+  };
   const renderItem = ({ item }: { item: User }) => (
     <UserItem
       title={item.displayName!}
       content={item.email}
-      onPress={async () => {
-        await postData({email:item.email,noteId:note.id})
-        if(!error){
-            console.log("data",data)
-            // Toast.show({
-            //     type: 'success',
-            //     text1: 'Hello',
-            //     text2: 'This is a success message!'
-            //   });
-        }
-      }}
+      onPress={()=> handleShare(item)}
     />
   );
   return (

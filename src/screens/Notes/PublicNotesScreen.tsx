@@ -39,7 +39,7 @@ const PublicNotesScreen = () => {
     <NoteItem
       title={item.title}
       content={item.content}
-      onPress={() => navigation.navigate('NoteDetailScreen', { note: item })}
+      onPress={() => navigation.navigate('NoteDetailScreen', { note: item,isPublic:true })}
     />
   );
   return (

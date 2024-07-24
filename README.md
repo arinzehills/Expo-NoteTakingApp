@@ -47,3 +47,9 @@ To start the development server and run the app:
     ```
 
 ### Project Structure
+├── assets
+├── components
+├── navigation
+├── screens
+├── services
+└── utils

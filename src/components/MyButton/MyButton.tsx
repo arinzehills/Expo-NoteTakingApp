@@ -13,12 +13,14 @@ import {
 import React, {FunctionComponent, ReactNode} from 'react';
 import MyText from '../MyText/MyText';
 import LottieView from 'lottie-react-native';
+import { colors } from '../../utils/colors';
 // import styled from 'styled-components/native';
 
 interface ButtonProps {
   btnStyles?: StyleProp<ViewStyle>;
   textStyles?: StyleProp<TextStyle>;
   isLoading?: boolean;
+  isRedBtn?:boolean;
   isDisable?: boolean;
   // onPress?: (event: GestureResponderEvent) => void | undefined; // Make margin prop optional
   children?: ReactNode;
@@ -33,7 +35,7 @@ const MyButton: FunctionComponent<ButtonProps> = props => {
       style={[
         props.btnStyles,
         styles.btn,
-        {opacity: props.isDisable ? 0.5 : 1},
+        {opacity: props.isDisable ? 0.5 : 1,backgroundColor:props.isRedBtn?colors.myRed:colors.white},
       ]}
       onPress={props.onPress}>
       {props.isLoading ? (
@@ -46,7 +48,7 @@ const MyButton: FunctionComponent<ButtonProps> = props => {
           />
         </View>
       ) : (
-        <MyText size="sm" textStyle={[props.textStyles]}>
+        <MyText size="sm" textStyle={[props.textStyles,{color:props.isRedBtn?colors.white:'black'}]}>
           {props.children}
         </MyText>
       )}

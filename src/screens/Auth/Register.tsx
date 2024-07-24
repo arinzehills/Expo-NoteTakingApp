@@ -94,10 +94,10 @@ const RegisterScreen = ({ navigation }: any) => {
           )}
           {error && <MyText size='xm' color={colors.danger}>{error?.message}</MyText>}
           <MyButton
-            btnStyles={{ backgroundColor: colors.myRed, width: 300 }}
+          isRedBtn={true}
+            btnStyles={{ width: 300 }}
             onPress={props.handleSubmit}
-            isLoading={loading}
-            textStyles={{ color: 'white' }}>
+            isLoading={loading} >
             Register
           </MyButton>
         </>

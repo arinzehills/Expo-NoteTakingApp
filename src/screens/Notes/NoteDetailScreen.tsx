@@ -8,6 +8,7 @@ import CustomBottomModal from '../../components/CustomBottomModal/CustomBottomMo
 import MyButton from '../../components/MyButton/MyButton';
 import { verticalScale } from '../../utils/Scaling';
 import UsersList from '../../components/Users/UsersList';
+import NotesVersions from './NoteVersion';
 
 interface Note {
   id: string;
@@ -15,16 +16,21 @@ interface Note {
   content: string;
 }
 
-type DetailScreenRouteProp = RouteProp<{ Detail: { note: Note } }, 'Detail'>;
+type DetailScreenRouteProp = RouteProp<{ Detail: { note: Note,isPublic?:boolean } }, 'Detail'>;
 
 const NoteDetailScreen: React.FC = () => {
   const route = useRoute<DetailScreenRouteProp>();
   const navigation = useNavigation<NavigationProp<any>>();
-  const { note } = route.params;
+  const { note,isPublic } = route.params;
+  const [title, setTitle] = useState(note.title);
+  const [content, setContent] = useState(note.content);
+  const [showNoteVersions, setShowNoteVersions] = useState(false);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
-  const { postData:postToP, error:perror, loading:ploading } = usePost(`/note/make-public/${note.id}`); // Replace with your API endpoint
- 
-  const { postData, error, loading } = usePost(`/note/delete/${note.id}`); // Replace with your API endpoint
+  const [editable, setEditable] = useState(false);
+  const { postData:postToP, error:perror, loading:ploading } = usePost(`/note/make-public/${note.id}`); 
+  const { postData, error, loading } = usePost(`/note/delete/${note.id}`); 
+  const { postData:editNote, error:eError, loading:eLdn } = usePost(`/note/${note.id}`, { method: 'PUT' }); 
+
 
   const handleDelete = () => {
     Alert.alert('Delete Note', 'Are you sure you want to delete this note?', [
@@ -48,6 +54,30 @@ const NoteDetailScreen: React.FC = () => {
       console.error('Error sharing to public:', error);
     }
   };
+
+  const handleTitleChange = (newTitle:string) => {
+    setTitle(newTitle);
+    setEditable(newTitle !== note.title || content !== note.content);
+  };
+
+  const handleContentChange = (newContent:string) => {
+    setContent(newContent);
+    setEditable(title !== note.title || newContent !== note.content);
+  };
+  const handleSave = async () => {
+    try {
+      await editNote({title,content});
+      Alert.alert('Success', 'Note edited successfully', [
+        { text: 'OK', onPress: () => navigation.goBack() }
+      ]);
+      setEditable(false);
+    } catch (error) {
+      console.error('Error sharing to public:', error);
+      Alert.alert('Error', 'Error saving note', [
+        { text: 'OK', }
+      ]);
+    }
+  };
   return (
     <>
     <View style={styles.container}>
@@ -57,19 +87,29 @@ const NoteDetailScreen: React.FC = () => {
         </MaterialIcons.Button>
         <View style={{flexDirection:'row'}}>
 
-        <MaterialIcons.Button name="share" backgroundColor="gray" color="white" onPress={handleShare}>
+        <MaterialIcons.Button name="share" backgroundColor="gray" color="white" onPress={()=>{setShowNoteVersions(true)}}>
           Versions
         </MaterialIcons.Button>
-        <MaterialIcons.Button name="share" backgroundColor="#fff" color="#000" onPress={handleShare}>
+        {!isPublic&&<MaterialIcons.Button name="share" backgroundColor="#fff" color="#000" onPress={handleShare}>
           Share
-        </MaterialIcons.Button>
+        </MaterialIcons.Button>}
         </View>
       </View>
-      <TextInput style={styles.title}>{note.title}</TextInput>
-      <TextInput style={styles.description}>{note.content}</TextInput>
+      <TextInput style={styles.title}  onChangeText={handleTitleChange}>{note.title}</TextInput>
+      <TextInput style={styles.description}  onChangeText={handleContentChange}>{note.content}</TextInput>
     </View>
+    {showNoteVersions&&<CustomBottomModal
+         isOpen={showNoteVersions}
+         title='Versions'
+         viewHeight={400}
+         setIsOpen={setShowNoteVersions}
+         children={ <NotesVersions noteId={note.id}/>}/>}
+    {editable && (
+        <MyButton children="Save" isLoading={eLdn} onPress={handleSave} isRedBtn={true} />
+      )}
     {bottomSheetVisible&&<CustomBottomModal
          isOpen={bottomSheetVisible}
+         title='Share'
          viewHeight={400}
          setIsOpen={setBottomSheetVisible}
          children={<>
@@ -77,7 +117,7 @@ const NoteDetailScreen: React.FC = () => {
          <MyButton   children="Share to a User" onPress={()=>{
           handleShare(),
           navigation.navigate('ShareToUsers',{ note })
-          }} btnStyles={{backgroundColor:colors.myRed}} textStyles={{color:colors.white}}/>
+          }} isRedBtn={true} textStyles={{color:colors.white}}/>
          </>}/>}
        
 </>

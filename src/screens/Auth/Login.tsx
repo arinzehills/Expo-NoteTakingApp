@@ -84,7 +84,8 @@ const LoginScreen = ({navigation}:any) => {
                 )}
       {error&&<MyText color={colors.danger}>{error}</MyText>}
         <MyButton
-            btnStyles={{backgroundColor: colors.myRed, width: 300}}
+            btnStyles={{width: 300}}
+            isRedBtn={true}
             onPress={props.handleSubmit}
             isLoading={loading}
             textStyles={{color: 'white'}}>

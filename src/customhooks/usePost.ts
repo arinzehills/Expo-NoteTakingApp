@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import axios, { AxiosError } from 'axios';
 import { API_URI } from './useGet';
 
-const usePost = (path:any) => {
+const usePost = (path:any,{ method = 'POST' } = {}) => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -10,12 +10,11 @@ const usePost = (path:any) => {
 
     const postData = useCallback(
       async (payload:any) => {
-        console.log("payload")
-        console.log(payload)
+        console.log("payload",payload)
         setLoading(true);
         try {
           const response = await fetch(mainUrl,{
-            method: 'POST',
+            method:method,
             headers: {
               'Content-Type': 'application/json',
             },
@@ -24,6 +23,7 @@ const usePost = (path:any) => {
   
           const text = await response.text();
           const result = JSON.parse(text);
+          console.log("STATUS",text,response.status)
           if (response.status === 200) {
             setLoading(false);
             setData(result);
@@ -33,7 +33,6 @@ const usePost = (path:any) => {
             setData(null);
             setError(result);
           }
-          console.log(text,response.status)
         } catch (err:any) {
           setError(err);
           console.log("EROR",err);

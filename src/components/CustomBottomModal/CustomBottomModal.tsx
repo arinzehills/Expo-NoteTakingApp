@@ -20,6 +20,7 @@ import MyText from '../MyText/MyText';
 type CustomModalProps = {
   setIsOpen: ({ }: boolean) => void;
   isOpen: boolean;
+  title?:string;
   loading?: boolean;
   children: React.ReactNode | undefined;
   viewHeight?: number;
@@ -29,6 +30,7 @@ const CustomBottomModal: React.FC<CustomModalProps> = ({
   children,
   setIsOpen,
   isOpen,
+  title
 }) => {
   const [fadeAnim] = useState(new Animated.Value(0));
 
@@ -74,7 +76,7 @@ const CustomBottomModal: React.FC<CustomModalProps> = ({
             </Animated.View>
             <View style={[styles.modalView, { height: viewHeight }]}>
               <View style={styles.modalTitle}>
-               <MyText size='sm' bold={true} textStyle={{textAlign:'center'}}>Title</MyText>
+               <MyText size='sm' bold={true} textStyle={{textAlign:'center'}}>{title??''}</MyText>
                 <Pressable
                   onPress={() => setIsOpen(false)}
                   style={styles.buttonClose}>
