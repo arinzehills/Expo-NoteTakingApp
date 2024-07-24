@@ -51,7 +51,7 @@ const RegisterScreen = ({ navigation }: any) => {
       <Formik
       
         // validationSchema={regValidationSchema}
-        initialValues={{ fullName: '', email: '', password: "" }}
+        initialValues={{ displayName: '', email: '', password: "" }}
         onSubmit={async values => {
           //  await handleLogin(values);
           handleSubmit(values)
@@ -60,8 +60,8 @@ const RegisterScreen = ({ navigation }: any) => {
           <TextInput
             style={styles.input}
             placeholder="Full Name"
-            value={props.values.fullName}
-            onChangeText={props.handleChange('fullName')}
+            value={props.values.displayName}
+            onChangeText={props.handleChange('displayName')}
           />
           {props.touched.email && props.errors.email && (
             <MyText color="red" size="xm">

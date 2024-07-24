@@ -9,38 +9,41 @@ import { useAuth } from '../../contexts/AuthProvider';
 
 
 
-const ProfileScreen = ({ navigation }:any) => {
+const ProfileScreen = ({ navigation }: any) => {
   const user = getAuth().currentUser;
   const { dispatch: authDispatch, state } = useAuth();
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      authDispatch({ type: 'LOGOUT',  });
+      authDispatch({ type: 'LOGOUT', });
     } catch (error) {
       console.error('Error signing out:', error);
     }
   };
-  const profileItem=()=>{
-    <View>
-          <MaterialIcons name="account-circle" size={80} color="#555" style={styles.icon} />
-
+  const ProfileItem = ({ icon, label = "" }:any) => {
+    return <View style={styles.profileItem}>
+      <MaterialIcons name={icon??"verified-user"} size={40} color="#000" style={styles.icon} />
+      <MyText bold={true} size='sm'>{label}</MyText>
     </View>
   }
   return (
     <View style={styles.container}>
-        <View style={styles.profileContainer}>
-          <MaterialIcons name="account-circle" size={80} color="#555" style={styles.icon} />
-          <Text style={styles.profileText}>Full Name: {user?.fullName || 'N/A'}</Text>
-          <Text style={styles.profileText}>Email: {user?.email}</Text>
-        </View>
-    {/* 
-     */}
-     <TouchableOpacity style={styles.button} onPress={handleLogout}>
-       <MaterialIcons name="logout" size={24} color="#fff" style={styles.buttonIcon} />
-       <Text style={styles.buttonText}>Logout</Text>
-     </TouchableOpacity>
-  </View>
+      <View style={styles.profileContainer}>
+        <MaterialIcons name="account-circle" size={80} color="#555" style={styles.icon} />
+
+        <ProfileItem icon='verified-user' label={user?.displayName!} />
+        <ProfileItem icon='email' label={user?.email!} />
+      </View>
+
+
+
+      {/* logout starts here */}
+      <TouchableOpacity style={styles.button} onPress={handleLogout}>
+        <MaterialIcons name="logout" size={24} color="#fff" style={styles.buttonIcon} />
+        <Text style={styles.buttonText}>Logout</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -52,8 +55,9 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#f8f9fa',
   },
+  profileItem:{flexDirection:'row',alignItems:'center',justifyContent:'space-around',width:'60%'},
   icon: {
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   profileContainer: {
     width: '100%',
