@@ -1,12 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-
+import LoginScreen from './src/screens/Auth/Login';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { AuthProvider } from './src/contexts/AuthProvider';
+import AppNavigator from './src/navigation';
+import { NavigationContainer } from '@react-navigation/native';
 export default function App() {
+  // auth()
+console.log("FIREBASE_API_KEY",'FIREBASE_API_KEY')
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+    <AuthProvider>
+      <AppNavigator/>
+    </AuthProvider>
+    </NavigationContainer>
   );
 }
 
