@@ -6,6 +6,7 @@ import MyText from '../../components/MyText/MyText';
 import { colors } from '../../utils/colors';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../../contexts/AuthProvider';
+import { verticalScale } from '../../utils/Scaling';
 
 
 
@@ -23,7 +24,7 @@ const ProfileScreen = ({ navigation }: any) => {
   };
   const ProfileItem = ({ icon, label = "" }:any) => {
     return <View style={styles.profileItem}>
-      <MaterialIcons name={icon??"verified-user"} size={40} color="#000" style={styles.icon} />
+      <MaterialIcons name={icon??"verified-user"} size={30} color="#000" style={styles.icon} />
       <MyText bold={true} size='sm'>{label}</MyText>
     </View>
   }
@@ -53,9 +54,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
+    marginVertical:verticalScale(5),
     backgroundColor: '#f8f9fa',
   },
-  profileItem:{flexDirection:'row',alignItems:'center',justifyContent:'space-around',width:'60%'},
+  profileItem:{flexDirection:'row',
+    marginVertical:verticalScale(5),
+    alignItems:'center',justifyContent:'space-around',width:'60%'},
   icon: {
     // marginBottom: 20,
   },
